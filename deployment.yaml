@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+      - image: jellyfin/jellyfin
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: media
+          mountPath: /media
+        - name: dri
+          mountPath: /dev/dri
+        resources: {}
+        securityContext:
+          privileged: true
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/stash/Jellyfin/config/
+          type: DirectoryOrCreate
+      - name: media
+        hostPath:
+          path: /mnt/stash/Jellyfin/Media/
+          type: DirectoryOrCreate
+      - name: dri
+        hostPath:
+          path: /dev/dri
+          type: Directory
+status: {}
